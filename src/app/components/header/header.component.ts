@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     // ดึงข้อมูลผู้ใช้งานที่ Login มาแสดง
     this.userProfile = this.auth.getUser()
-    console.log(this.userProfile)
+    // console.log(this.userProfile)
   }
 
   onToggleSidenav() {

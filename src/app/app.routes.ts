@@ -6,6 +6,7 @@ import { StockComponent } from './components/stock/stock.component'
 
 // Auth Guard
 import { authenGuard } from './auth/auth.guard'
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 
 export const routes: Routes = [
     { 
@@ -37,6 +38,7 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'login'
+        component: PageNotFoundComponent,
+        data: { title: 'Page Not Found' }
     }
 ]

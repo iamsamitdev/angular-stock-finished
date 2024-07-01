@@ -9,7 +9,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 // Import Observable
 import { Observable } from 'rxjs';
 
+// Import Environment
 import { environment } from '../../environments/environment'
+
+// Import Proudct Model
+import { ProductModel, ProductCreateUpdateModel } from '../models/product.model'
 
 @Injectable({
   providedIn: 'root'
@@ -41,15 +45,15 @@ export class ProductService {
 
   // CRUD Methods ----------------------------------------------------
   
-    // getAllProducts(): Observable<any> {
-  //   return this.http.get<any>(
+    // getAllProducts(): Observable<ProductModel> {
+  //   return this.http.get<ProductModel>(
   //     this.apiURL + 'Product', 
   //     this.httpOptions
   //   )
   // }
 
   // Get All Products by parameter (page: number, limit: number, selectedCategory: string, searchQuery: string)
-  getAllProducts(page: number, limit: number, selectedCategory: string, searchQuery: string): Observable<any> {
+  getAllProducts(page: number, limit: number, selectedCategory: string, searchQuery: string): Observable<ProductModel> {
     let url = this.apiURL + 'Product?page=' + page + '&limit=' + limit
 
     if (selectedCategory) {
@@ -60,23 +64,23 @@ export class ProductService {
       url += '&searchQuery=' + searchQuery
     }
 
-    return this.http.get<any>(
+    return this.http.get<ProductModel>(
       url, 
       this.httpOptions
     )
   }
 
   // Get Product By ID
-  getProductById(id: number): Observable<any> {
-    return this.http.get<any>(
+  getProductById(id: number): Observable<ProductModel> {
+    return this.http.get<ProductModel>(
       this.apiURL + 'Product/' + id, 
       this.httpOptions
     )
   }
 
   // Create Product
-  createProduct(product: any): Observable<any> {
-    return this.http.post<any>(
+  createProduct(product: ProductCreateUpdateModel): Observable<ProductCreateUpdateModel> {
+    return this.http.post<ProductCreateUpdateModel>(
       this.apiURL + 'Product', 
       product, 
       this.httpOptionsPost
@@ -84,8 +88,8 @@ export class ProductService {
   }
 
   // Update Product
-  updateProduct(id: number, product: any): Observable<any> {
-    return this.http.put<any>(
+  updateProduct(id: number, product: ProductCreateUpdateModel): Observable<ProductCreateUpdateModel> {
+    return this.http.put<ProductCreateUpdateModel>(
       this.apiURL + 'Product/' + id,
       product, 
       this.httpOptionsPost
@@ -93,8 +97,8 @@ export class ProductService {
   }
 
   // Delete Product
-  deleteProduct(id: number): Observable<any> {
-    return this.http.delete<any>(
+  deleteProduct(id: number): Observable<unknown> {
+    return this.http.delete<unknown>(
       this.apiURL + 'Product/' + id, 
       this.httpOptions
     )
