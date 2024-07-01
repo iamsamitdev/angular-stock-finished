@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
   // สำหรับซ่อนแสดง password
   hide = true
 
+  // ฟังก์ชัน ngOnInit สำหรับเริ่มต้นการทำงาน
   ngOnInit() {
 
     // กำหนด Meta Tag description

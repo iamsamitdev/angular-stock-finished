@@ -1,35 +1,31 @@
-import { Component, ViewChild, inject  } from '@angular/core'
+import { Component, ViewChild, inject } from '@angular/core'
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router'
-import { MatCardModule } from '@angular/material/card'
-import { MatIconModule } from '@angular/material/icon'
-import { MenuComponent } from "./components/menu/menu.component";
-import { HeaderComponent } from "./components/header/header.component"
+import { HeaderComponent } from './components/header/header.component'
+import { MenuComponent } from './components/menu/menu.component'
+import { NgStyle } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav'
-import { NgStyle } from '@angular/common'
 import { Title } from '@angular/platform-browser'
 
-// Import Auth Service
+// Import AuthService
 import { AuthService } from './services/auth.service'
 
 @Component({
     selector: 'app-root',
-    standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
+    standalone: true,
     imports: [
-      NgStyle,
-      RouterOutlet, 
-      MatCardModule, 
-      MatIconModule, 
+      NgStyle, 
       MenuComponent, 
-      HeaderComponent,
-      MatSidenavModule
+      HeaderComponent, 
+      RouterOutlet, 
+      MatSidenavModule,
     ]
 })
 export class AppComponent {
-  
-  // title = 'angular-stock'
 
+  private router = inject(Router)
+  private titleService = inject(Title)
   private auth = inject(AuthService)
 
   isExpanded = true
@@ -37,23 +33,22 @@ export class AppComponent {
 
   @ViewChild('sidenav', { static: true }) sidenav: any
 
-  constructor(
-    private router: Router,
-    private titleService: Title
-  ) {
+  ngOnInit(): void {
+
     // Check if the user is logged in or not with cookie
     this.isLoggedIn = this.auth.isLoggedIn() ? true : false
-  }
 
-  ngOnInit(): void {
+    // Update the page title when the route changes
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const url = event.url
         this.updatePageTitle(url)
       }
     })
+
   }
 
+  // Method to update the page title
   private updatePageTitle(url: string) {
     const routeObj = this.router.config.find((route) => ("/" + route.path) === url)
     let routeData = routeObj?.data
@@ -64,7 +59,9 @@ export class AppComponent {
     }
   }
 
+  // Method to toggle the sidebar
   toggleSideBar() {
     this.sidenav.toggle();
   }
+
 }

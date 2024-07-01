@@ -9,14 +9,6 @@ import {
   MatDialogActions,
 } from '@angular/material/dialog'
 
-// Define the type of data that the dialog will receive
-// type AlertDialogData = {
-//   icon?: string
-//   iconColor?: string
-//   title: string
-//   subtitle: string
-// }
-
 @Component({
   selector: 'app-alert-dialog',
   templateUrl: './alert-dialog.component.html',
@@ -37,6 +29,7 @@ export class AlertDialogComponent {
   public data = inject(MAT_DIALOG_DATA)
   public dialogRef = inject(MatDialogRef<AlertDialogComponent>)
 
+  // Close the dialog
   closeDialog(): void {
     this.dialogRef.close(null)
   }

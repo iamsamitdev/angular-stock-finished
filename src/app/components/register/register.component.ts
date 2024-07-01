@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatIconButton, MatButton } from '@angular/material/button';
@@ -6,7 +6,14 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatCard, MatCardImage, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card'
+import { MatDialog } from '@angular/material/dialog'
 import { Meta } from '@angular/platform-browser'
+
+// Import user service
+import { UserService } from '../../services/user.service'
+
+// Import Alert Dialog
+import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component'
 
 @Component({
     selector: 'app-register',
@@ -32,6 +39,13 @@ import { Meta } from '@angular/platform-browser'
     ],
 })
 export class RegisterComponent implements OnInit {
+
+  private meta = inject(Meta)
+  private http = inject(UserService)
+  private router = inject(Router)
+  private formBuilder = inject(FormBuilder)
+  private dialog = inject(MatDialog)
+
   registerForm!: FormGroup
   submitted: boolean = false
 
@@ -45,12 +59,7 @@ export class RegisterComponent implements OnInit {
   // สำหรับซ่อนแสดง password
   hide = true
 
-  constructor(
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private meta: Meta
-  ) {}
-
+  // ฟังก์ชัน ngOnInit สำหรับเริ่มต้นการทำงาน
   ngOnInit(): void {
     // กำหนด Meta Tag description
     this.meta.addTag({ name: 'description', content: 'Login page for Stock Management' })
@@ -73,12 +82,52 @@ export class RegisterComponent implements OnInit {
       this.userData.email = this.registerForm.value.email
       this.userData.password = this.registerForm.value.password
 
-      console.log(this.userData)
-     
+      // เรียกใช้งาน Service สำหรับ Register
+      this.http.Register(this.userData).subscribe({
+        next: (data: any) => {
+          console.log(data)
+          if (data.status === 'Success') {
+            this.dialog.open(AlertDialogComponent, {
+              data: {
+                title: 'สำเร็จ',
+                icon: 'check_circle',
+                iconColor: 'green',
+                subtitle: 'สมัครสมาชิกสำเร็จ',
+              },
+              disableClose: true,
+            })
+            this.router.navigate(['/login'])
+          } else {
+            this.dialog.open(AlertDialogComponent, {
+              data: {
+                title: 'มีข้อผิดพลาด',
+                icon: 'error',
+                iconColor: 'red',
+                subtitle: 'มีข้อผิดพลาดในการสมัครสมาชิก',
+              },
+              disableClose: true,
+            })
+          }
+        },
+        error: (error: any) => {
+          console.log(error)
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              title: 'มีข้อผิดพลาด',
+              icon: 'error',
+              iconColor: 'red',
+              subtitle: error.error.message,
+            },
+            disableClose: true,
+          })
+        },
+      })
     }
   }
 
+  // ฟังก์ชันสำหรับยกเลิกการสมัครสมาชิก
   onClickCancel() {
     this.router.navigate(['/login'])
   }
+
 }
