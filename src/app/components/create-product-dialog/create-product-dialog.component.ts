@@ -24,6 +24,37 @@ import { ProductService } from '../../services/product.service'
 import { MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog'
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component'
 
+// Date Picker
+import { MatDatepickerModule } from '@angular/material/datepicker'
+import { MatNativeDateModule, NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MatDateFormats } from '@angular/material/core'
+
+
+export class ThaiDateAdapter extends NativeDateAdapter {
+  override getFirstDayOfWeek(): number {
+    return 0;
+  }
+
+  override format(date: Date, displayFormat: any): string {
+    const year = date.getFullYear() + 543;
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${day}/${month}/${year}`;
+  }
+}
+
+export const THAI_DATE_FORMATS: MatDateFormats = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+}
+
+
 @Component({
   selector: 'app-create-product-dialog',
   standalone: true,
@@ -40,7 +71,13 @@ import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component'
     MatButton,
     MatIcon,
     MatSelectModule,
-    MatDialogContent
+    MatDialogContent,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: ThaiDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: THAI_DATE_FORMATS },
   ],
   templateUrl: './create-product-dialog.component.html',
   styleUrl: './create-product-dialog.component.scss',
@@ -114,6 +151,7 @@ export class CreateProductDialogComponent {
       categoryid: ['', [Validators.required]],
       createddate: [dateNow],
       modifieddate: [dateNow],
+      thaidate: [Date]
     })
   }
 
